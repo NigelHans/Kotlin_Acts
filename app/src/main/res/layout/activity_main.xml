@@ -42,10 +42,10 @@
             android:id="@+id/emailLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="E-mail Address"
-            android:textSize="12sp"
+            android:layout_marginBottom="8dp"
+            android:text="Username"
             android:textColor="#666666"
-            android:layout_marginBottom="8dp" />
+            android:textSize="12sp" />
 
         <!-- Email Input -->
         <FrameLayout
@@ -70,14 +70,14 @@
                 android:layout_marginStart="44dp"
                 android:layout_marginEnd="12dp"
                 android:background="@android:color/transparent"
-                android:hint="mangjuan@gmail.com"
-                android:inputType="textEmailAddress"
-                android:textSize="14sp"
-                android:textColorHint="#CCCCCC"
-                android:textColor="#333333"
                 android:gravity="center_vertical"
+                android:hint="mangjuan"
+                android:inputType="textEmailAddress"
                 android:paddingStart="0dp"
-                android:paddingEnd="0dp" />
+                android:paddingEnd="0dp"
+                android:textColor="#333333"
+                android:textColorHint="#CCCCCC"
+                android:textSize="14sp" />
 
         </FrameLayout>
 

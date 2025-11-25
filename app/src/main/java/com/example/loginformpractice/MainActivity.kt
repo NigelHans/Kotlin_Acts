@@ -1,5 +1,6 @@
 package com.example.shareh
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Button
@@ -22,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rememberMeCheckbox: CheckBox
     private lateinit var forgotPasswordText: TextView
     private lateinit var signUpText: TextView
-    private lateinit var backButton: ImageButton
 
     private lateinit var auth: FirebaseAuth
     private var isPasswordVisible = false
@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         rememberMeCheckbox = findViewById(R.id.rememberMeCheckbox)
         forgotPasswordText = findViewById(R.id.forgotPasswordText)
         signUpText = findViewById(R.id.signUpText)
-        backButton = findViewById(R.id.backButton)
     }
 
     private fun setupClickListeners() {
@@ -63,21 +62,15 @@ class MainActivity : AppCompatActivity() {
             togglePasswordVisibility()
         }
 
-        // Back button
-        backButton.setOnClickListener {
-            onBackPressed()
-        }
-
         // Forgot password
         forgotPasswordText.setOnClickListener {
             Toast.makeText(this, "Forgot password clicked", Toast.LENGTH_SHORT).show()
             // TODO: Navigate to forgot password screen
         }
 
-        // Sign up
+        // Sign up - Navigate to Register Activity
         signUpText.setOnClickListener {
-            Toast.makeText(this, "Navigate to Sign Up", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to sign up screen
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
@@ -109,10 +102,11 @@ class MainActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                // TODO: Navigate to home screen
                 clearInputs()
                 loginButton.isEnabled = true
                 loginButton.text = "Login"
+                // TODO: Navigate to home screen
+                // Example: startActivity(Intent(this, HomeActivity::class.java))
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Login failed: ${e.message}", Toast.LENGTH_SHORT).show()

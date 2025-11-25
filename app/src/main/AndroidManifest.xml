@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.shareh">
 
-    <!-- Internet permission for Firebase -->
+    <!-- Internet permission for Firebase/Network operations -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Optional: For offline capabilities -->
+    <!-- Optional: For offline capabilities and network state detection -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginFormPractice">
 
-        <!-- Main Activity (Login Screen) -->
+        <!-- Main Activity (Login Screen) - App Entry Point -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

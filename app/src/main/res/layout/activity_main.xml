@@ -61,7 +61,7 @@
                 android:layout_marginStart="12dp"
                 android:contentDescription="Email icon"
                 android:src="@drawable/ic_email"
-                android:tint="#999999" />
+                app:tint="#999999" />
 
             <EditText
                 android:id="@+id/emailInput"
@@ -105,7 +105,7 @@
                 android:layout_marginStart="12dp"
                 android:contentDescription="Password icon"
                 android:src="@drawable/ic_lock"
-                android:tint="#999999" />
+                app:tint="#999999" />
 
             <EditText
                 android:id="@+id/passwordInput"
@@ -131,7 +131,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Toggle password visibility"
                 android:src="@drawable/ic_eye"
-                android:tint="#999999"
+                app:tint="#999999"
                 android:scaleType="centerInside" />
 
         </FrameLayout>

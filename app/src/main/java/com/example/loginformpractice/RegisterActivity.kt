@@ -10,11 +10,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -28,18 +23,12 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var termsCheckbox: CheckBox
     private lateinit var loginText: TextView
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
     private var isPasswordVisible = false
     private var isConfirmPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-
-        // Initialize Firebase
-        auth = Firebase.auth
-        firestore = Firebase.firestore
 
         // Initialize views
         initializeViews()
@@ -61,22 +50,18 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        // Sign up button
         signUpButton.setOnClickListener {
             performSignUp()
         }
 
-        // Password visibility toggle
         passwordToggle.setOnClickListener {
             togglePasswordVisibility()
         }
 
-        // Confirm password visibility toggle
         confirmPasswordToggle.setOnClickListener {
             toggleConfirmPasswordVisibility()
         }
 
-        // Login link - Navigate back to MainActivity
         loginText.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
@@ -89,82 +74,47 @@ class RegisterActivity : AppCompatActivity() {
         val password = passwordInput.text.toString().trim()
         val confirmPassword = confirmPasswordInput.text.toString().trim()
 
-        // Validation
-        if (fullName.isEmpty()) {
-            Toast.makeText(this, "Please enter your full name", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (email.isEmpty()) {
-            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password.isEmpty()) {
-            Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password.length < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password != confirmPassword) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (!termsCheckbox.isChecked) {
-            Toast.makeText(this, "Please agree to the Terms & Conditions", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Disable button during registration
-        signUpButton.isEnabled = false
-        signUpButton.text = "Creating account..."
-
-        // Firebase registration
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener { result ->
-                // Save user data to Firestore
-                val userId = result.user?.uid ?: run {
-                    signUpButton.isEnabled = true
-                    signUpButton.text = "Sign up"
-                    return@addOnSuccessListener
-                }
-
-                val userData = mapOf(
-                    "fullName" to fullName,
-                    "email" to email,
-                    "createdAt" to System.currentTimeMillis()
-                )
-
-                firestore.collection("users").document(userId)
-                    .set(userData)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
-                        clearInputs()
-                        // Navigate to login
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Error saving user data: ${e.message}", Toast.LENGTH_SHORT).show()
-                        signUpButton.isEnabled = true
-                        signUpButton.text = "Sign up"
-                    }
+        // Validation using when expression for cleaner code
+        when {
+            fullName.isEmpty() -> {
+                Toast.makeText(this, "Please enter your full name", Toast.LENGTH_SHORT).show()
+                fullNameInput.requestFocus()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Registration failed: ${e.message}", Toast.LENGTH_SHORT).show()
-                signUpButton.isEnabled = true
-                signUpButton.text = "Sign up"
+            email.isEmpty() -> {
+                Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
+                emailInput.requestFocus()
             }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                emailInput.requestFocus()
+            }
+            password.isEmpty() -> {
+                Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
+                passwordInput.requestFocus()
+            }
+            password.length < 6 -> {
+                Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                passwordInput.requestFocus()
+            }
+            confirmPassword.isEmpty() -> {
+                Toast.makeText(this, "Please confirm your password", Toast.LENGTH_SHORT).show()
+                confirmPasswordInput.requestFocus()
+            }
+            password != confirmPassword -> {
+                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                confirmPasswordInput.requestFocus()
+            }
+            !termsCheckbox.isChecked -> {
+                Toast.makeText(this, "Please agree to the Terms & Conditions", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                // All validations passed - registration successful
+                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                clearInputs()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }
     }
 
     private fun togglePasswordVisibility() {
